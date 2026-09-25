@@ -115,6 +115,8 @@ Drafts for review:
 
 - [Phase 1: Consensus guarantees, assumptions, and decentralization criteria](docs/requirements/consensus-guarantees-and-decentralization.md) — issue #3; draft for review, with unresolved decisions explicitly marked.
 
+- [Phase 1: Proposed performance and resource budgets](docs/requirements/performance-and-resource-budgets.md) — issue #4; draft for review, with unresolved decisions explicitly marked.
+
 ### Phase 2 — Threat model and comparative research
 
 - Define adversarial capabilities, fault thresholds, network conditions, and economic assumptions.
