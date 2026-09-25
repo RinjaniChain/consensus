@@ -107,6 +107,10 @@ Research notes should separate facts supported by sources, analytical conclusion
 
 **Deliverable:** a versioned requirements draft with open questions and acceptance criteria. Numerical targets beyond the initial approximately one-second timing ambition require explicit agreement.
 
+Drafts for review:
+
+- [Financial workloads and consensus scope](docs/requirements/financial-workloads-and-scope.md) — issue #1; candidate profiles, subsystem boundaries, and open scope decisions. Not yet approved.
+
 ### Phase 2 — Threat model and comparative research
 
 - Define adversarial capabilities, fault thresholds, network conditions, and economic assumptions.
