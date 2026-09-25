@@ -117,6 +117,8 @@ Drafts for review:
 
 - [Phase 1: Proposed performance and resource budgets](docs/requirements/performance-and-resource-budgets.md) — issue #4; draft for review, with unresolved decisions explicitly marked.
 
+- [Phase 1: Requirement tradeoffs and proposed priorities](docs/requirements/tradeoffs-and-priorities.md) — issue #5; draft for review, with unresolved decisions explicitly marked.
+
 ### Phase 2 — Threat model and comparative research
 
 - Define adversarial capabilities, fault thresholds, network conditions, and economic assumptions.
