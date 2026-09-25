@@ -2,7 +2,7 @@
 
 Status: **Draft for review — payments and atomic asset exchange are the agreed starting scope; detailed semantics and numerical targets remain proposals.**
 
-Version: 0.1. Related work: [issue #1](https://github.com/RinjaniChain/consensus/issues/1). This document supplies inputs to issues [#2](https://github.com/RinjaniChain/consensus/issues/2), [#3](https://github.com/RinjaniChain/consensus/issues/3), and [#4](https://github.com/RinjaniChain/consensus/issues/4); it does not replace their role, guarantee, or resource-budget specifications.
+Version: 0.2. Related work: [issue #1](https://github.com/RinjaniChain/consensus/issues/1). This document supplies inputs to issues [#2](https://github.com/RinjaniChain/consensus/issues/2), [#3](https://github.com/RinjaniChain/consensus/issues/3), and [#4](https://github.com/RinjaniChain/consensus/issues/4); it does not replace their role, guarantee, or resource-budget specifications. Cryptographic workload assumptions now follow the [implementation review](../research/crypto-zk-implementation-review.md), without approving dependency adoption.
 
 ## 1. Problem and evidence status
 
@@ -63,6 +63,8 @@ Every profile below is a **synthetic proposal**, not a selected product feature.
 For encoded transaction size, use:
 
 `B_tx = B_body + sum(signature_bytes) + B_inline_keys + B_witness + B_encoding_overhead`
+
+For the implementation-aligned authorization profile, use ML-DSA-65 and ML-DSA-87 variants with an inline public key for each independent authorization. The inspected runtime derives account identifiers from public-key hashes and carries the key with the signature. Do not use a cached-key assumption as the baseline or substitute ML-DSA-44 costs. Include the scheme discriminator and transaction framing in encoding overhead. This models an existing candidate implementation; it does not select a transaction codec or signature scheme for RinjaniChain. [S3]
 
 `B_body` includes operation fields, identifiers, replay/domain information, and any fee/deadline fields. It excludes signatures, inline keys, and witnesses. Body ranges below are provisional byte fixtures, not claims about an eventual encoding. If a chosen encoding does not fit them, revise the fixtures visibly. Receipts, block metadata, finality certificates, and replicated networking are additional costs.
 
@@ -141,9 +143,30 @@ A future design separating ordering and execution must explain how invalid execu
 | Oracle, issuer, bridge, or custodian dependence | Consensus agreement does not establish external truth or redeemability | Keep those guarantees outside the baseline or introduce explicit dependency-specific profiles and failure models |
 | PQ authorization overhead | Larger encoded requests and repeated verification affect bandwidth, storage, and weak-device participation | Evaluate schemes and key-distribution models explicitly; do not assume classical signature aggregation/threshold tools remain available |
 
-For a concrete **size illustration only**, FIPS 204 Table 2 specifies an ML-DSA-44 signature of 2,420 bytes and public key of 1,312 bytes. [S1] With a 256-byte body, one signature, an already available authenticated key, no witness, and omitted encoding overhead, W1 would carry at least 2,676 bytes. Including that key raises the subtotal to 3,988 bytes. At an illustrative 1,000 such requests per second, these are 2.676 MB/s or 3.988 MB/s of transaction payload alone (decimal units), before replication, votes, certificates, receipts, transport, or recovery traffic.
+### Implementation-aligned authorization costs
 
-Those figures are derived arithmetic, not an algorithm selection, throughput target, minimum network requirement, or verification benchmark. Cached-key variants require specified key registration, authenticated lookup, rotation, and cold-start costs. Independent multi-signature variants multiply authorization costs unless a separately justified construction changes that model. Proofs, randomness, leader selection, and network authentication need their own PQ assessment in later work.
+FIPS 204 Table 2 provides the sizes below; the inspected runtime supports both variants and bundles each signature with its public key. [S1, S3]
+
+| Variant | Signature bytes | Public-key bytes | One authorization subtotal | W1 with 256-byte body | W4 with 256-byte body and two independent authorizations |
+| --- | --- | --- | --- | --- | --- |
+| ML-DSA-65 | 3,309 | 1,952 | 5,261 | 5,517 | 10,778 |
+| ML-DSA-87 | 4,627 | 2,592 | 7,219 | 7,475 | 14,694 |
+
+These are payload subtotals excluding witnesses, scheme discriminators, transaction framing, and other protocol overhead. W4 is a proposed workload calculation, not evidence that the inspected implementation supplies atomic exchange. At an illustrative 1,000 W1 transactions per second, the two variants imply 5.517 MB/s and 7.475 MB/s of transaction payload respectively, before replication, votes, certificates, receipts, transport, or recovery traffic. Decimal units are used.
+
+The figures are derived arithmetic, not throughput targets or verification benchmarks. A signature-only cached-key variant would be a departure from the inspected transaction path and needs an explicit registration, lookup, rotation, and bootstrap design. Neither recursive proof aggregation nor the presence of a threshold-signature library establishes compact BFT vote certificates.
+
+### ZK workload boundaries
+
+The candidate building blocks are a Goldilocks-field Poseidon2 hash implementation and a Plonky2-derived recursive proof stack, with specialized ownership and transfer-membership circuits. The inspected stack distinguishes non-ZK leaf proofs, ZK private aggregation, and non-ZK public aggregation; these are different roles and privacy assumptions, not interchangeable proof formats. [S3]
+
+Add **W6: specialized proof-backed claims** as an optional research profile, not an approved financial feature. Describe ownership-only claims separately from transfer-membership claims. Count proof bytes, public inputs, authenticated block/header references, nullifier checks where applicable, payout-state changes, and any outer transaction authorization separately. For aggregate claims, vary leaf count over {1, 2, 4, 8} as proposed fixtures subject to supported circuit configurations, and report both proofs and successful claims per second. Proof size, proving time, verification time, peak RAM, witness availability, and supported batch sizes remain unresolved until the exact artifact/configuration and hardware are fixed. Do not reuse W1's byte or execution budget for W6.
+
+Ownership-only proofs do not establish a deposit or an unspent claim; transfer-membership proofs still need canonical-history checks and stateful replay prevention. These specialized circuits do not establish arbitrary state-transition validity, atomic exchange, consensus finality, or data availability. A proof-based replacement for W5 execution would require additional circuits and integration work. Non-ZK leaf material must not be sent to an untrusted aggregator under an assumed privacy guarantee. [S3]
+
+For W6, include amounts below, at, and above the inspected `10^10` base-unit quantization step, and near the quantized `u32` limit. Record rounding/remainder and fee behavior, including conservation checks. These are compatibility fixtures, not an adopted denomination or asset-precision policy. [S3]
+
+The inspected recursion default declares `security_bits = 100`; that configuration value is not proof of a 128-bit post-quantum security level. Keep proof soundness, zero knowledge, signature security, hashing, transport authentication, randomness, and leader selection as separate review obligations. Source inspection supports a concrete reuse candidate, not a whole-system security claim. [S3]
 
 ## 10. Open decisions for owner review
 
@@ -172,5 +195,6 @@ Approval record: on 2026-09-25, in the working task for issue #1, the project ow
 
 - **[S1]** NIST, [FIPS 204: Module-Lattice-Based Digital Signature Standard](https://csrc.nist.gov/pubs/fips/204/final), Table 2 ([full text](https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=958463)). Used only for the concrete signature/key-size illustration, not evidence of system-wide PQ security or performance.
 - **[S2]** Nick Johnson, [EIP-658: Embedding transaction status code in receipts](https://eips.ethereum.org/EIPS/eip-658). Used as an established example of recording execution success/failure separately from transaction inclusion, not as a consensus recommendation.
+- **[S3]** [Cryptography and specialized proof implementation review](../research/crypto-zk-implementation-review.md): pinned source snapshots, observed parameters, proof boundaries, and reuse constraints. This is source inspection, not an audit or a deployment attestation.
 
 Sources consulted on 2026-09-25. All workload mixes, ranges, recommendations, and arithmetic beyond the cited facts are proposals or analysis in this document.
