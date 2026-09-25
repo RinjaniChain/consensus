@@ -111,6 +111,7 @@ Drafts for review:
 
 - [Financial workloads and consensus scope](docs/requirements/financial-workloads-and-scope.md) — issue #1; candidate profiles, subsystem boundaries, and open scope decisions. Not yet approved.
 - [Cryptography and specialized proof implementation review](docs/research/crypto-zk-implementation-review.md) — concrete ML-DSA, Poseidon2, and recursive-proof candidates; observed parameters, reuse constraints, and limits of the proof statements. No dependencies selected.
+- [Participant roles and candidate device profiles](docs/requirements/participant-roles-and-device-profiles.md) — issue #2; verification duties, trust boundaries, device fixtures, and participation tradeoffs. Proposed requirements, not device-support guarantees.
 
 ### Phase 2 — Threat model and comparative research
 
