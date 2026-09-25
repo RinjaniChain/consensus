@@ -113,6 +113,8 @@ Drafts for review:
 - [Cryptography and specialized proof implementation review](docs/research/crypto-zk-implementation-review.md) — concrete ML-DSA, Poseidon2, and recursive-proof candidates; observed parameters, reuse constraints, and limits of the proof statements. No dependencies selected.
 - [Participant roles and candidate device profiles](docs/requirements/participant-roles-and-device-profiles.md) — issue #2; verification duties, trust boundaries, device fixtures, and participation tradeoffs. Proposed requirements, not device-support guarantees.
 
+- [Phase 1: Consensus guarantees, assumptions, and decentralization criteria](docs/requirements/consensus-guarantees-and-decentralization.md) — issue #3; draft for review, with unresolved decisions explicitly marked.
+
 ### Phase 2 — Threat model and comparative research
 
 - Define adversarial capabilities, fault thresholds, network conditions, and economic assumptions.
