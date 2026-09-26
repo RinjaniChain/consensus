@@ -119,6 +119,8 @@ Drafts for review:
 
 - [Phase 1: Requirement tradeoffs and proposed priorities](docs/requirements/tradeoffs-and-priorities.md) — issue #5; draft for review, with unresolved decisions explicitly marked.
 
+- [Phase 1: Consolidated requirements draft and owner review checklist](docs/requirements/phase-1-requirements-draft.md) — issue #6; draft for review, with unresolved decisions explicitly marked.
+
 ### Phase 2 — Threat model and comparative research
 
 - Define adversarial capabilities, fault thresholds, network conditions, and economic assumptions.
