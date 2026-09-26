@@ -4,6 +4,10 @@ Research, requirements, and eventual implementation of the consensus protocol fo
 
 **Current phase: research and specification.** The immediate objective is a rigorous consensus requirements specification, not an implementation. This repository is the canonical workspace for that research and will later host the consensus code.
 
+## Whitepaper
+
+[Whitepaper v0.1](docs/whitepaper/whitepaper-v0.1.md) presents the financial scope, consensus objectives, cryptographic findings, resource constraints, and open architecture decisions. It synthesizes the Phase 1 research; it is not a selected protocol or a performance claim.
+
 ## Mission and design goals
 
 Develop a protocol that supports financial transactions with fast, deterministic finality while preserving meaningful permissionless participation and decentralization.
